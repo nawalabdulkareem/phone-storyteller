@@ -1,102 +1,549 @@
 /* ========================================
-   MYSTERY GAME - COMPLETE UI OVERHAUL
+   MYSTERY GAME — FIXED & CLEAN UI
    Blood on the Clocktower Theme
    ======================================== */
 
-/* ========== BASE RESET & SETUP ========== */
-* {
+/* ========== RESET ========== */
+*, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-/* ========== BODY & BACKGROUND ========== */
-body {
-  overscroll-behavior: none;
-  -webkit-tap-highlight-color: transparent;
-  background: 
-    radial-gradient(ellipse at 20% 10%, rgba(60, 0, 0, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(30, 0, 20, 0.3) 0%, transparent 50%),
-    linear-gradient(to bottom, #000000 0%, #0D0000 30%, #1a0000 60%, #0D0000 100%);
-  color: #F5E6D3;
-  font-family: 'Crimson Text', 'Georgia', serif;
-  margin: 0;
-  padding: 10px;
-  padding-left: 55px;
-  min-height: 100vh;
-  position: relative;
+html {
   overflow-x: hidden;
 }
 
-/* Animated blood splatter background pattern */
+/* ========== BODY ========== */
+body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  background: linear-gradient(to bottom, #000 0%, #0D0000 40%, #1a0000 70%, #0D0000 100%);
+  color: #F5E6D3;
+  font-family: 'Crimson Text', Georgia, serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 15% 20%, rgba(139, 0, 0, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(100, 0, 30, 0.06) 0%, transparent 35%),
-    radial-gradient(circle at 50% 50%, rgba(80, 0, 0, 0.04) 0%, transparent 50%);
-  animation: bloodPulse 8s ease-in-out infinite;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(60,0,0,.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(30,0,20,.18) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Vignette effect - darker edges */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
-  pointer-events: none;
-  z-index: 0;
+/* ========================================
+   SIDEBAR — COMPLETE OVERRIDE
+   ======================================== */
+
+#ui-bar {
+  width: 210px !important;
+  max-width: 210px !important;
+  background: linear-gradient(to bottom, rgba(15,0,0,.99), rgba(8,0,0,.99)) !important;
+  border-right: 2px solid #500000 !important;
+  box-shadow: 4px 0 18px rgba(0,0,0,.85) !important;
+  z-index: 200 !important;
+  overflow: hidden !important;
 }
 
-@keyframes bloodPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.7; }
+/* When stowed, leave only the tab visible */
+#ui-bar.stowed {
+  left: -178px !important;
 }
 
-/* ========== MAIN GAME CONTAINER ========== */
+/* Story area margins — stowed vs open */
+#story {
+  margin-left:  32px !important;  /* just the toggle tab */
+  transition: margin-left .2s ease-in !important;
+  z-index: 1 !important;
+}
+#ui-bar:not(.stowed) ~ #story {
+  margin-left: 210px !important;
+}
+
+/* Tray (history buttons strip) */
+#ui-bar-tray {
+  position: absolute !important;
+  inset: 0 0 auto 0 !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 6px !important;
+  background: rgba(25,0,0,.95) !important;
+  border-bottom: 1px solid #500000 !important;
+  z-index: 5 !important;
+}
+
+/* Toggle tab — hangs OUTSIDE the sidebar */
+#ui-bar-toggle {
+  position: absolute !important;
+  right: -30px !important;
+  top: 5px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-height: unset !important;
+  z-index: 10001 !important;
+  background: linear-gradient(to bottom, #6a0000, #2a0000) !important;
+  border: 2px solid #8B0000 !important;
+  border-left: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  color: #F5E6D3 !important;
+  font-size: .85em !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 3px 0 8px rgba(0,0,0,.7) !important;
+  transform: none !important;
+}
+#ui-bar-toggle:hover {
+  background: linear-gradient(to bottom, #8B0000, #4a0000) !important;
+  border-color: #DC143C !important;
+  transform: none !important;
+}
+
+/* History prev/next buttons */
+#ui-bar-history {
+  display: flex !important;
+  gap: 4px !important;
+  align-items: center !important;
+}
+#ui-bar-history button {
+  width: 26px !important;
+  height: 26px !important;
+  min-height: unset !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: .8em !important;
+  background: linear-gradient(to bottom, #4a0000, #220000) !important;
+  border: 1px solid #4a0000 !important;
+  border-radius: 4px !important;
+  color: #F5E6D3 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.6) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+#ui-bar-history button:hover {
+  background: linear-gradient(to bottom, #6a0000, #3a0000) !important;
+  border-color: #7a0000 !important;
+  transform: none !important;
+}
+
+/* Sidebar body */
+#ui-bar-body {
+  padding: 8px 8px 12px !important;
+  margin-top: 42px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+#story-title {
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  color: #DC143C !important;
+  text-align: center !important;
+  font-family: 'Cinzel', Georgia, serif !important;
+  border-bottom: 1px solid #500000 !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 10px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  letter-spacing: 1px !important;
+}
+
+/* Menu links */
+#menu ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 5px 0 !important;
+  border: none !important;
+}
+#menu li {
+  margin: 3px 0 !important;
+  padding: 0 !important;
+}
+#menu li a {
+  display: block !important;
+  padding: 7px 8px !important;
+  color: #F5E6D3 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(to bottom, #380000, #180000) !important;
+  border: 1px solid #460000 !important;
+  border-radius: 5px !important;
+  text-decoration: none !important;
+  font-family: 'Cinzel', serif !important;
+  letter-spacing: .5px !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  min-height: unset !important;
+  transition: background .15s, border-color .15s !important;
+}
+#menu li a:hover {
+  background: linear-gradient(to bottom, #5a0000, #320000) !important;
+  border-color: #7a0000 !important;
+  transform: none !important;
+}
+
+/* ========================================
+   MAIN CONTENT — #passages
+   ======================================== */
+
+/* SugarCube puts #passages inside #story.
+   We style #passages as the visual card. */
+#story {
+  display: block !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+
 #passages {
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  background: 
-    linear-gradient(135deg, rgba(45, 5, 5, 0.95) 0%, rgba(20, 0, 5, 0.98) 100%);
-  padding: 25px;
-  border-radius: 15px;
-  position: relative;
-  z-index: 1;
-  min-height: calc(100vh - 20px);
-  
-  /* Ornate double border */
-  border: 3px solid #8B7355;
-  box-shadow: 
-    0 0 0 6px #3D0000,
-    0 0 60px rgba(139, 0, 0, 0.6),
-    inset 0 0 50px rgba(0, 0, 0, 0.7),
-    inset 0 2px 4px rgba(139, 0, 0, 0.3);
+  /* max-width overrides SugarCube's 54em */
+  max-width: 540px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
 }
 
-/* Inner glow effect */
-#passages::before {
+.passage {
+  background: linear-gradient(150deg, rgba(42,4,4,.97) 0%, rgba(18,0,3,.99) 100%);
+  border: 2px solid #5a2020;
+  border-radius: 12px;
+  
+  /* No horizontal padding at top — night counter fills it */
+  padding: 0 18px 24px;
+  
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  
+  box-shadow:
+    0 0 35px rgba(110,0,0,.4),
+    inset 0 0 35px rgba(0,0,0,.4);
+  
+  color: #E8DDD0;
+  font-size: clamp(16px, 4vw, 18px);
+  line-height: 1.75;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.6);
+  
+  animation: passageFadeIn .35s ease-out;
+}
+
+@keyframes passageFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ========================================
+   NIGHT/DAY COUNTER — TOP BANNER (FIXED)
+   ======================================== */
+/*
+  The Twine passages output <div id="night-day-counter"> as the FIRST
+  child of .passage.  We turn it into a top banner flush with the passage
+  edges.  All fixed/absolute positioning is removed.
+*/
+#night-day-counter {
+  /* Reset any SugarCube default positioning */
+  position: static !important;
+  left:      auto !important;
+  right:     auto !important;
+  bottom:    auto !important;
+  top:       auto !important;
+  transform: none !important;
+  
+  /* Pull flush to passage edges, act as top header */
+  display:    block !important;
+  width:      auto !important;
+  max-width:  none !important;
+  
+  margin:  0 -18px 20px !important;  /* -18px matches .passage padding */
+  padding: 11px 18px !important;
+  
+  border-radius:  10px 10px 0 0 !important;
+  border:         none !important;
+  border-bottom:  2px solid #8B0000 !important;
+  
+  background: linear-gradient(135deg, #5a0000 0%, #380000 60%, #260000 100%) !important;
+  color:      #FFD700 !important;
+  
+  font-family:    'Cinzel', Georgia, serif !important;
+  font-size:      clamp(12px, 3vw, 14px) !important;
+  font-weight:    900 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  text-align:     center !important;
+  
+  box-shadow:   0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,100,0,.08) !important;
+  text-shadow:  0 0 10px rgba(255,215,0,.55), 0 1px 3px rgba(0,0,0,1) !important;
+  
+  pointer-events: none !important;
+  z-index:        auto !important;
+  animation:      none !important;
+}
+
+/* ========================================
+   BIG TITLE TEXT
+   ======================================== */
+.big {
+  font-size:      clamp(20px, 5.5vw, 30px);
+  font-weight:    900;
+  color:          #DC143C;
+  text-align:     center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family:    'Cinzel', 'IM Fell English SC', Georgia, serif;
+  margin:         16px 0 12px;
+  line-height:    1.3;
+  word-wrap:      break-word;
+  overflow-wrap:  break-word;
+  
+  text-shadow:
+    0 0 15px rgba(220,20,60,.65),
+    0 0 30px rgba(139,0,0,.4),
+    2px 2px 4px rgba(0,0,0,.95);
+  
+  animation: titleGlow 4s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%,100% { text-shadow: 0 0 15px rgba(220,20,60,.65), 2px 2px 4px rgba(0,0,0,.95); }
+  50%     { text-shadow: 0 0 25px rgba(220,20,60,.95), 0 0 45px rgba(139,0,0,.6), 2px 2px 4px rgba(0,0,0,.95); }
+}
+
+/* ========================================
+   BUTTONS — GAME PASSAGE BUTTONS
+   ======================================== */
+.passage button {
+  display:     block;
+  width:       100%;
+  max-width:   100%;
+  
+  background: linear-gradient(to bottom, #6a0000 0%, #4a0000 55%, #2a0000 100%);
+  color:       #F5E6D3;
+  border:      2px solid #8B0000;
+  padding:     13px 16px;
+  
+  font-size:      clamp(13px, 3.5vw, 16px);
+  font-family:    'Cinzel', 'Alegreya SC', Georgia, serif;
+  font-weight:    700;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  
+  cursor:      pointer;
+  margin:      6px 0;
+  border-radius: 8px;
+  min-height:  44px;
+  
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .12s;
+  
+  box-shadow:
+    0 4px 8px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  
+  text-shadow: 1px 1px 2px rgba(0,0,0,.95);
+  
+  position: relative;
+  overflow: hidden;
+}
+
+.passage button::after {
   content: '';
   position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, 
-    #8B0000 0%, 
-    #4A0000 25%, 
-    #2A0000 50%, 
+  inset: 0 auto 0 -100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(220,20,60,.1), transparent);
+  transition: left .45s;
+  pointer-events: none;
+}
+
+.passage button:hover {
+  background: linear-gradient(to bottom, #8B0000 0%, #6a0000 55%, #4a0000 100%);
+  border-color: #CC1030;
+  box-shadow: 0 4px 12px rgba(0,0,0,.75), 0 0 18px rgba(220,20,60,.38);
+  transform: translateY(-1px);
+}
+
+.passage button:hover::after { left: 100%; }
+
+.passage button:active {
+  transform: translateY(1px) scale(.98);
+  box-shadow: 0 2px 4px rgba(0,0,0,.9), inset 0 2px 6px rgba(0,0,0,.7);
+}
+
+/* ========================================
+   INPUT FIELDS
+   ======================================== */
+.macro-textbox,
+input[type="text"] {
+  display:    block;
+  width:      150px;
+  max-width:  100%;
+  margin:     8px 0;
+  
+  background:  rgba(12,0,0,.93);
+  border:      2px solid #6a0000;
+  color:       #F5E6D3;
+  padding:     10px 14px;
+  font-size:   clamp(16px, 4vw, 18px);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-weight: 600;
+  border-radius: 7px;
+  text-align:  center;
+  
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.8);
+  transition: border-color .2s, box-shadow .2s;
+  
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.macro-textbox:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: #DC143C;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.8), 0 0 14px rgba(220,20,60,.42);
+}
+
+/* ========================================
+   LISTS
+   ======================================== */
+.passage ul {
+  list-style: none;
+  padding:    0;
+  margin:     10px 0;
+}
+
+.passage ul li {
+  padding:     7px 0 7px 28px;
+  position:    relative;
+  font-size:   clamp(15px, 3.7vw, 17px);
+  line-height: 1.6;
+  color:       #E8DDD0;
+}
+
+.passage ul li::before {
+  content:     "†";
+  color:       #DC143C;
+  position:    absolute;
+  left:        0;
+  font-size:   clamp(17px, 4.3vw, 20px);
+  line-height: 1.4;
+  text-shadow: 0 0 7px rgba(220,20,60,.6);
+}
+
+/* ========================================
+   INLINE ELEMENTS
+   ======================================== */
+b, strong {
+  color:       #FFD700;
+  font-weight: 900;
+  text-shadow: 0 0 5px rgba(255,215,0,.4), 1px 1px 2px rgba(0,0,0,.9);
+}
+
+i, em {
+  color:       #CEC0B5;
+  font-style:  italic;
+}
+
+hr {
+  border:     none;
+  height:     2px;
+  background: linear-gradient(to right, transparent, #8B0000 20%, #DC143C 50%, #8B0000 80%, transparent);
+  margin:     14px 0;
+  box-shadow: 0 0 7px rgba(220,20,60,.22);
+}
+
+#error {
+  color:       #FF7070;
+  font-weight: 700;
+  font-size:   clamp(12px, 3.2vw, 14px);
+  margin:      6px 0;
+  padding:     5px 10px;
+  border-left: 3px solid #DC143C;
+  background:  rgba(120,0,0,.15);
+  border-radius: 0 4px 4px 0;
+}
+
+/* ========================================
+   SCROLLBAR & SELECTION
+   ======================================== */
+::-webkit-scrollbar           { width: 7px; }
+::-webkit-scrollbar-track     { background: rgba(10,0,0,.4); }
+::-webkit-scrollbar-thumb     { background: linear-gradient(to bottom, #6a0000, #3a0000); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #8B0000, #5a0000); }
+
+::selection { background: rgba(220,20,60,.38); color: #FFD700; }
+
+.passage { -webkit-user-select: none; user-select: none; }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* All phones — default stowed = 32px margin */
+@media (max-width: 500px) {
+  .passage {
+    border-radius: 0;
+    border-left:   none;
+    border-right:  none;
+    padding-left:  14px;
+    padding-right: 14px;
+  }
+  #night-day-counter {
+    margin-left:   -14px !important;
+    margin-right:  -14px !important;
+    border-radius: 0 !important;
+  }
+  .big { font-size: clamp(19px, 5vw, 24px); }
+  .passage button {
+    min-height: 42px;
+    padding:    11px 14px;
+    font-size:  clamp(12px, 3.3vw, 14px);
+  }
+}
+
+/* Tablet+ — center the card */
+@media (min-width: 501px) {
+  #story    { padding: 12px !important; }
+  #passages { max-width: 520px !important; }
+  .passage  { border-radius: 12px; }
+  .passage button { max-width: 360px; margin-left: auto; margin-right: auto; }
+}
+
+/* Landscape / short screens */
+@media (orientation: landscape) and (max-height: 500px) {
+  .big             { font-size: clamp(16px, 4vw, 20px); margin: 8px 0; }
+  .passage button  { min-height: 38px; padding: 9px 14px; font-size: 13px; }
+  #night-day-counter { padding: 7px 14px !important; font-size: 11px !important; }
+}
+
+/* Safe area (notched phones) */
+@supports (padding: max(0px)) {
+  .passage { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:      0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:     0.01ms !important;
+  }
+}
     #4A0000 75%, 
     #8B0000 100%);
   border-radius: 15px;
